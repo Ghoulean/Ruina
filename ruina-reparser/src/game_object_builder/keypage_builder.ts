@@ -45,8 +45,8 @@ const EQUIP_EFFECT_KEYS: string[] = [
     "HBResist",
 ];
 
-export class KeyPageProcessor {
-    public static process(): KeyPage[] {
+export class KeyPageBuilder {
+    public process(): KeyPage[] {
         const data: KeyPage[] = [];
         for (const filePath of walkSync(KEY_PAGE_DIR)) {
             const json: any = readFile(filePath);
@@ -131,7 +131,7 @@ export class KeyPageProcessor {
         return data;
     }
 
-    private static verifyEquipEffect(e: EquipEffect): boolean {
+    private verifyEquipEffect(e: EquipEffect): boolean {
         for (const k of EQUIP_EFFECT_KEYS) {
             if (!(k in e)) {
                 return false;

@@ -72,8 +72,8 @@ const ABNO_TO_CHAPTER_MAP: { [key: string]: Chapter } = {
     "WhiteNight": Chapter.IMPURITAS_CIVITATIS, 
 }
 
-export class AbnoPageProcessor {
-    public static process(): AbnoPage[] {
+export class AbnoPagBuilder {
+    public process(): AbnoPage[] {
         const data: AbnoPage[] = [];
         for (const filePath of walkSync(ABNO_DIR)) {
             // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -103,7 +103,7 @@ export class AbnoPageProcessor {
         return data;
     }
 
-    private static determineChapter(abnoPageName: string): Chapter {
+    private determineChapter(abnoPageName: string): Chapter {
         const chapter: Chapter = ABNO_TO_CHAPTER_MAP[abnoPageName.split('_')[0]];
         if (!chapter) {
             throw new Error(`No chapter found for ${abnoPageName}`);

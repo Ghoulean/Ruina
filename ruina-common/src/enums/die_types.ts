@@ -35,6 +35,7 @@ export const COUNTER_DIE: DieType[] = [
     DieType.EVADE_COUNTER,
 ];
 
+// TODO: remove localization descriptors in common package
 const localizationMap: { [key in DieType]: { [key in Localization]: string } } =
     {
         [DieType.BLUNT]: {

@@ -2,8 +2,8 @@ import { Passive, Rarity, rarityFromStringValue } from "@ghoulean/ruina-common";
 import { PASSIVE_DIR } from "../util/constants";
 import { readFile, walkSync } from "../util/file";
 
-export class PassiveProcessor {
-    public static process(): Passive[] {
+export class PassiveBuilder {
+    public process(): Passive[] {
         const data: Passive[] = [];
         for (const filePath of walkSync(PASSIVE_DIR)) {
             const json: any = readFile(filePath);

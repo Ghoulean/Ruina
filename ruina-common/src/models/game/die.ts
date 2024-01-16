@@ -1,4 +1,4 @@
-import { DieType } from "../enums";
+import { DieType } from "../../enums";
 
 export interface Die {
     type: DieType;

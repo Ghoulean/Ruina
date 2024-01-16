@@ -1,4 +1,4 @@
-import { Chapter, DieType, Localization, Rarity, Resistance } from "../enums";
+import { Chapter, DieType, Localization, Rarity, Resistance } from "../../enums";
 
 export interface KeyPage {
     id: string;

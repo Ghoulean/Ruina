@@ -23,10 +23,10 @@ import {
     QueryMapperLookupTable,
     QueryMapperPropType,
 } from "./localization_mappers/query_mapper";
-import { AbnoPageProcessor } from "./processors/abnopage_processor";
-import { CombatPageProcessor } from "./processors/combatpage_processor";
-import { KeyPageProcessor } from "./processors/keypage_processor";
-import { PassiveProcessor } from "./processors/passive_processor";
+import { AbnoPageProcessor } from "./game_object_builder/abnopage_processor";
+import { CombatPageProcessor } from "./game_object_builder/combatpage_processor";
+import { KeyPageProcessor } from "./game_object_builder/keypage_processor";
+import { PassiveProcessor } from "./game_object_builder/passive_processor";
 import { fileSanityCheck, setupJsonFiles, writeDataFile } from "./util/file";
 
 fileSanityCheck();

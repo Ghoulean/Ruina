@@ -1,4 +1,4 @@
-import { AbnoPageSelectType, Chapter, Floor, Localization } from "../enums";
+import { AbnoPageSelectType, Chapter, Floor, Localization } from "../../enums";
 
 export interface AbnoPage {
     nameId: string;

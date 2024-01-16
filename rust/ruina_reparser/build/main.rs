@@ -21,11 +21,12 @@ fn main() {
     let out_file_path = PathBuf::from(env::var("OUT_DIR").unwrap()).join(PathBuf::from("out.rs"));
     if out_file_path.exists() {
         dbg!(
-            "artifacts already exist at {}; not rebuilding",
+            "[reparser] artifacts already exist at {}; not rebuilding",
             out_file_path.to_str().unwrap()
         );
         return;
     }
+    let mut out_file = File::create(out_file_path).unwrap();
 
     let abno_pages = reserialize_abno_pages();
     let battle_symbols = reserialize_battle_symbols();
@@ -55,7 +56,6 @@ fn main() {
     ]
     .join("\n");
 
-    let mut out_file = File::create(out_file_path).unwrap();
     out_file.write_all(output.as_bytes()).unwrap();
-    dbg!("wrote artifacts");
+    dbg!("[reparser] wrote artifacts");
 }

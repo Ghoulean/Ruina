@@ -14,8 +14,8 @@ import { COMBAT_PAGE_DIR } from "../util/constants";
 import { readFile, walkSync } from "../util/file";
 import path = require("path");
 
-export class CombatPageProcessor {
-    public static process(): CombatPage[] {
+export class CombatPageBuilder {
+    public process(): CombatPage[] {
         const data: CombatPage[] = [];
         for (const filePath of walkSync(COMBAT_PAGE_DIR)) {
             const json: any = readFile(filePath);
@@ -66,7 +66,7 @@ export class CombatPageProcessor {
         return data;
     }
 
-    private static parseDie(blob: any): Die {
+    private parseDie(blob: any): Die {
         return {
             // Some cards, like Crescendo (both of them) and Deluge of Brachial Quietuses
             // have typo'd "Detail" as "Detil". This causes the die type to default to SLASH
@@ -77,7 +77,7 @@ export class CombatPageProcessor {
         };
     }
 
-    private static determineChapter(filePath: string, card: any): Chapter {
+    private determineChapter(filePath: string, card: any): Chapter {
         return (
             Number(card["Chapter"]?.["_text"]) ||
             Number(path.basename(filePath).replace(/[^0-9]/gi, "")) ||
@@ -85,7 +85,7 @@ export class CombatPageProcessor {
         );
     }
 
-    private static determineEgo(blob: any): Ego {
+    private determineEgo(blob: any): Ego {
         if (blob["Option"]?.["_text"] == "EGO") {
             return Ego.ABNO_EGO;
         } else if (blob["Option"]?.["_text"] == "EgoPersonal") {
@@ -95,7 +95,7 @@ export class CombatPageProcessor {
         }
     }
 
-    private static determineEgoFloor(id: number): Floor {
+    private determineEgoFloor(id: number): Floor {
         const BASE_EGO_NUM: number = 910000;
         const egoId: number = id - BASE_EGO_NUM;
         if (egoId <= 0) {
