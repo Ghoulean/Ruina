@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 
-pub struct Index(pub HashMap<String, Vec<String>>);
+use crate::taggers::tagger::Tag;
+use crate::taggers::tagger::TypedId;
+
+pub struct Index(pub HashMap<TypedId, Vec<Tag>>);
 
 impl Index {
     pub fn merge(&self, other: Index) -> Index {

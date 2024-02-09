@@ -8,3 +8,6 @@
  * pub const PASSIVES: [Passive; 808];
  */
 include!(concat!(env!("OUT_DIR"), "/", env!("OUT_FILE")));
+
+// #[path = "tagger.rs"]
+// pub mod taggers;

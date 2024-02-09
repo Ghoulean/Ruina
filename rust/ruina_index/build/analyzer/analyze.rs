@@ -1,8 +1,8 @@
-use crate::filters::filter::Filter;
-use crate::tokenizer::tokenizer::Tokenizer;
+use crate::analyzer::filters::filter::Filter;
+use crate::analyzer::tokenizer::tokenizer::Tokenizer;
 
-// TODO: definitely move this to its own crate
-// TODO: newtype
+use super::tokenizer::tokenizer::Token;
+
 pub struct Analyzer {
     tokenizer: Tokenizer,
     filters: Vec<Box<dyn Filter>>,
@@ -16,7 +16,7 @@ impl Analyzer {
         }
     }
 
-    pub fn analyze(&self, text: &str) -> Vec<String> {
+    pub fn analyze(&self, text: &str) -> Vec<Token> {
         let mut tokens = self.tokenizer.tokenize(text);
         self.filters.iter().for_each(|f| {
             tokens = f.filter(tokens.clone());

@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 
+use crate::analyzer::tokenizer::tokenizer::Token;
+
 use super::filter::Filter;
 
 pub struct StopwordFilter {
@@ -16,10 +18,12 @@ impl StopwordFilter {
 
 impl Filter for StopwordFilter {
     /// Prerequisite: all strings in `vec` are lowercase and no punctuation
-    fn filter(&self, vec: Vec<String>) -> Vec<String> {
+    /// Don't understand why unwrapping and rewrapping is necessary -- investigate
+    fn filter(&self, vec: Vec<Token>) -> Vec<Token> {
         vec.iter()
+            .map(|token| token.0.clone())
             .filter(|s| !self.stopwords.contains(s.as_str()))
-            .map(String::from)
+            .map(Token)
             .collect()
     }
 }

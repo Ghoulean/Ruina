@@ -1,3 +1,5 @@
+use crate::analyzer::tokenizer::tokenizer::Token;
+
 use super::filter::Filter;
 
 pub struct PunctuationFilter {}
@@ -9,8 +11,8 @@ impl PunctuationFilter {
 }
 
 impl Filter for PunctuationFilter {
-    fn filter(&self, vec: Vec<String>) -> Vec<String> {
-        vec.iter().map(|s| s.to_lowercase()).collect()
+    fn filter(&self, vec: Vec<Token>) -> Vec<Token> {
+        vec.iter().map(|s| s.0.to_lowercase()).map(Token).collect()
     }
 }
 

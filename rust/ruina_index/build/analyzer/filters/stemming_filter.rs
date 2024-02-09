@@ -1,5 +1,7 @@
 use rust_stemmers::Stemmer;
 
+use crate::analyzer::tokenizer::tokenizer::Token;
+
 use super::filter::Filter;
 
 pub struct StemmingFilter {
@@ -15,11 +17,12 @@ impl StemmingFilter {
 }
 
 impl Filter for StemmingFilter {
-    /// Prerequisite: all strings in `vec` are lowercase and have no punctuation
-    fn filter(&self, vec: Vec<String>) -> Vec<String> {
+    /// Prerequisite: all tokens in `vec` are lowercase and have no punctuation
+    fn filter(&self, vec: Vec<Token>) -> Vec<Token> {
         vec.iter()
-            .map(|s| self.en_stemmer.stem(s))
+            .map(|s| self.en_stemmer.stem(&s.0))
             .map(String::from)
+            .map(Token)
             .collect()
     }
 }

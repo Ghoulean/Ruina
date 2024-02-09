@@ -1,4 +1,5 @@
-// TODO: move to another crate
+#[derive(Clone, Eq, Hash, PartialEq)]
+pub struct Token(pub String);
 pub struct Tokenizer {}
 
 impl Tokenizer {
@@ -6,8 +7,8 @@ impl Tokenizer {
         Tokenizer{}
     }
 
-    pub fn tokenize(&self, txt: &str) -> Vec<String> {
-        txt.split(" ").map(String::from).collect()
+    pub fn tokenize(&self, txt: &str) -> Vec<Token> {
+        txt.split(" ").map(String::from).map(Token).collect()
     }
 }
 

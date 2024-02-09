@@ -1,24 +1,21 @@
 use std::{path::PathBuf, env, fs::File, io::Write};
 
 use analyzer::analyze::Analyzer;
-use filters::{
-    filter::Filter, punctuation_filter::PunctuationFilter, stemming_filter::StemmingFilter,
-    stopword_filter::StopwordFilter,
-};
-use index::{index::Index, inverse_index::InverseIndex};
-use ruina_reparser::{ABNO_PAGES, BATTLE_SYMBOLS, COMBAT_PAGES, KEY_PAGES, PASSIVES};
+use index::index::Index;
 use rust_stemmers::{Algorithm, Stemmer};
-use taggers::tagger::Tagger;
-use tokenizer::tokenizer::Tokenizer;
+
+use ruina_reparser::{PASSIVES, ABNO_PAGES, BATTLE_SYMBOLS, KEY_PAGES, COMBAT_PAGES};
+use taggers::tagger::Tag;
+
+use crate::{analyzer::{filters::{filter::Filter, punctuation_filter::PunctuationFilter, stemming_filter::StemmingFilter, stopword_filter::StopwordFilter}, tokenizer::tokenizer::Tokenizer}, index::inverse_index::InverseIndex};
+use crate::taggers::tagger::Tagger;
 
 mod analyzer;
-mod filters;
 mod index;
 mod taggers;
-mod tokenizer;
 
 fn main() {
-    let out_file_path = PathBuf::from(env::var("OUT_DIR").unwrap()).join(PathBuf::from(env::var("OUT_FILE").unwrap()));
+    let out_file_path = PathBuf::from(env::var("OUT_DIR").unwrap()).join(PathBuf::from("out.rs"));
     if out_file_path.exists() {
         dbg!(
             "[index] artifacts already exist at {}; not rebuilding",
@@ -62,10 +59,13 @@ fn build_index_from(tagger: Vec<impl Tagger>, analyzer: &Analyzer) -> Index {
             .iter()
             .map(|x| {
                 (
-                    x.generate_tag_key(),
+                    x.get_typed_id(),
                     x.generate_tags()
                         .iter()
-                        .flat_map(|txt| analyzer.analyze(txt))
+                        .map(|tag| tag.0.clone())
+                        .flat_map(|txt| analyzer.analyze(&txt))
+                        .map(|token| token.0)
+                        .map(Tag)
                         .collect(),
                 )
             })

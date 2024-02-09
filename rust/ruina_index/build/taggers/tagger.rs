@@ -1,6 +1,19 @@
-// TODO: figure out typings
-// and whether or not trait actually works here
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub struct Tag(pub String);
+
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub struct TypedId(pub PageType, pub String);
+
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub enum PageType {
+    AbnoPageId,
+    BattleSymbolId,
+    CombatPageId,
+    KeyPageId,
+    PassiveId,
+}
+
 pub trait Tagger {
-    fn generate_tag_key(&self) -> String;
-    fn generate_tags(&self) -> Vec<String>;
+    fn get_typed_id(&self) -> TypedId;
+    fn generate_tags(&self) -> Vec<Tag>;
 }

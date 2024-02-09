@@ -5,5 +5,4 @@ r = "run"
 c = "clean"
 
 [env]
-OUT_DIR = { value = "out", relative = true }
-OUT_FILE = { value = "out_index.rs" }
+OUT_DIR = { value = "out" }
