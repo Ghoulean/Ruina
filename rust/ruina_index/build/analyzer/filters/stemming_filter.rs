@@ -18,6 +18,7 @@ impl StemmingFilter {
 
 impl Filter for StemmingFilter {
     /// Prerequisite: all tokens in `vec` are lowercase and have no punctuation
+    /// (TODO: breaks encapsulation -- rethink)
     fn filter(&self, vec: Vec<Token>) -> Vec<Token> {
         vec.iter()
             .map(|s| self.en_stemmer.stem(&s.0))

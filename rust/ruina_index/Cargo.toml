@@ -11,6 +11,7 @@ phf = { version = "0.11.2", default-features = false }
 ruina_common = { path = "../ruina_common", version = "1.0.0" }
 ruina_reparser = { path = "../ruina_reparser", version = "1.0.0" }
 strum = "0.25.0"
+strum_macros = "0.25.0"
 
 [build-dependencies]
 phf = { version = "0.11.2", default-features = false }
@@ -21,3 +22,4 @@ ruina_common = { path = "../ruina_common", version = "1.0.0" }
 ruina_reparser = { path = "../ruina_reparser", version = "1.0.0" }
 rust-stemmers = "1.2.0"
 strum = "0.25.0"
+strum_macros = "0.25.0"

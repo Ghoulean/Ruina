@@ -1,16 +1,29 @@
-use std::{path::PathBuf, env, fs::File, io::Write};
+use std::{env, fs::File, io::Write, path::PathBuf};
 
-use analyzer::analyze::Analyzer;
 use index::index::Index;
+use ruina_common::localizations::common::Locale;
 use rust_stemmers::{Algorithm, Stemmer};
+use strum::IntoEnumIterator;
 
-use ruina_reparser::{PASSIVES, ABNO_PAGES, BATTLE_SYMBOLS, KEY_PAGES, COMBAT_PAGES};
+use ruina_reparser::{ABNO_PAGES, BATTLE_SYMBOLS, COMBAT_PAGES, KEY_PAGES, PASSIVES};
 use taggers::tagger::Tag;
 
-use crate::{analyzer::{filters::{filter::Filter, punctuation_filter::PunctuationFilter, stemming_filter::StemmingFilter, stopword_filter::StopwordFilter}, tokenizer::tokenizer::Tokenizer}, index::inverse_index::InverseIndex};
 use crate::taggers::tagger::Tagger;
+use crate::{
+    analyzer::{
+        analyze::Analyzer,
+        filters::{
+            filter::Filter, punctuation_filter::PunctuationFilter, stemming_filter::StemmingFilter,
+            stopword_filter::StopwordFilter,
+        },
+        tokenizer::tokenizer::Tokenizer,
+    },
+    autocomplete::autocomplete::generate_serialized_autocomplete_objs,
+    index::inverse_index::InverseIndex,
+};
 
 mod analyzer;
+mod autocomplete;
 mod index;
 mod taggers;
 
@@ -44,8 +57,14 @@ fn main() {
 
     let inverse_index = InverseIndex::from_index(index);
 
+    let autocomplete_objs = Locale::iter()
+        .map(|x| generate_serialized_autocomplete_objs(&x))
+        .collect::<Vec<_>>()
+        .join("\n");
+
     let output = [
-        inverse_index.to_serialized_phf_map("INVERSE_CARD_INDEX")
+        inverse_index.to_serialized_phf_map("INVERSE_CARD_INDEX"),
+        autocomplete_objs,
     ]
     .join("\n");
 

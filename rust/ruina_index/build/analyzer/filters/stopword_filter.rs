@@ -18,6 +18,7 @@ impl StopwordFilter {
 
 impl Filter for StopwordFilter {
     /// Prerequisite: all strings in `vec` are lowercase and no punctuation
+    /// (TODO: breaks encapsulation -- rethink)
     /// Don't understand why unwrapping and rewrapping is necessary -- investigate
     fn filter(&self, vec: Vec<Token>) -> Vec<Token> {
         vec.iter()

@@ -104,6 +104,7 @@ dependencies = [
  "ruina_reparser",
  "rust-stemmers",
  "strum",
+ "strum_macros",
  "unidecode",
 ]
 
