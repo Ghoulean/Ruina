@@ -3,18 +3,30 @@ extern crate ruina_common;
 use std::collections::HashMap;
 
 use phf::Map;
+use ruina_common::game_objects::common::Chapter;
+use ruina_common::game_objects::key_page::Resistance;
+use ruina_common::game_objects::key_page::KeyPageRange;
+use ruina_common::game_objects::abno_page::AbnoTargetting;
 use ruina_common::game_objects::abno_page::AbnoPage;
 use ruina_common::game_objects::battle_symbol::BattleSymbol;
 use ruina_common::game_objects::combat_page::CombatPage;
 use ruina_common::game_objects::key_page::KeyPage;
+use ruina_common::game_objects::combat_page::Die;
+use ruina_common::game_objects::abno_page::Abno;
+use ruina_common::game_objects::combat_page::DieType;
+use ruina_common::game_objects::battle_symbol::BattleSymbolSlot;
 use ruina_common::game_objects::passive::Passive;
+use ruina_common::game_objects::combat_page::CombatRange;
 use ruina_common::localizations::abno_page_locale::AbnoPageLocale;
 use ruina_common::localizations::battle_symbol_locale::BattleSymbolLocale;
 use ruina_common::localizations::card_effect_locale::CardEffectLocale;
 use ruina_common::localizations::combat_page_locale::CombatPageLocale;
 use ruina_common::localizations::common::Locale;
+use ruina_common::game_objects::common::Floor;
 use ruina_common::localizations::key_page_locale::KeyPageLocale;
 use ruina_common::localizations::passive_locale::PassiveLocale;
+use ruina_common::game_objects::common::Rarity;
+use ruina_common::game_objects::key_page::KeyPageResists;
 use strum::IntoEnumIterator;
 
 /***
@@ -128,6 +140,15 @@ mod tests {
     use super::*;
 
     const NUM_LOCALES: usize = 5;
+
+    #[test]
+    fn game_objects_count_sanity_check() {
+        assert_eq!(ABNO_PAGES.len(), 156);
+        assert_eq!(BATTLE_SYMBOLS.len(), 200);
+        assert_eq!(COMBAT_PAGES.len(), 1613);
+        assert_eq!(KEY_PAGES.len(), 625);
+        assert_eq!(PASSIVES.len(), 808);
+    }
 
     #[test]
     fn abno_page_locales_map_sanity_check() {

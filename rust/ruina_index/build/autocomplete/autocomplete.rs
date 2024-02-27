@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::string::ToString;
 
 use ruina_common::localizations::common::Locale;
 use ruina_reparser::ABNO_PAGES;
@@ -8,27 +9,24 @@ use ruina_reparser::{
     BATTLE_SYMBOLS, COMBAT_PAGES, KEY_PAGES, PASSIVES,
 };
 
+use crate::autocomplete::differentiators::typed_id_disambiguator;
+use crate::autocomplete::models::DisambiguatedAutocomplete;
 use crate::taggers::tagger::Tagger;
 use crate::taggers::tagger::TypedId;
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
-struct AmbiguousAutocomplete(pub String);
-
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
-struct DisambiguationDisplay(pub String);
-
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
-struct DisambiguatedAutocomplete(pub AmbiguousAutocomplete, pub Option<DisambiguationDisplay>);
-
-#[derive(Clone)]
-struct AmbiguousAutocompleteMap(pub HashMap<TypedId, DisambiguatedAutocomplete>);
-
-struct IncompleteAutocompleteMap(pub HashMap<AmbiguousAutocomplete, AmbiguousAutocompleteMap>);
+use super::models::{AmbiguousAutocomplete, AmbiguousAutocompleteMap, DisambiguationDisplay, IncompleteAutocompleteMap};
 
 pub fn generate_serialized_autocomplete_objs(locale: &Locale) -> String {
     let naive_map = generate_naive_autocomplete_map(locale);
-    let disambiguation_pages = generate_serialized_disambiguation_page_array(&naive_map);
-    todo!()
+    let disambiguation_pages = generate_serialized_disambiguation_page_array(&naive_map, locale);
+    let mut editable_map = naive_map.clone();
+    differentiate_by(&mut editable_map, typed_id_disambiguator);
+    let disambiguation_map = generate_serialized_disambiguation_map(&editable_map, locale);
+    
+    [
+        disambiguation_pages,
+        disambiguation_map
+    ].join("\n")
 }
 
 // todo: please generalize this. it hurts to look at.
@@ -136,11 +134,11 @@ fn try_insert_incomplete_map(
 
 // todo: organize this function somewhere else?
 // todo: subfunctions
-fn generate_serialized_disambiguation_page_array(naive_map: &IncompleteAutocompleteMap) -> String {
+fn generate_serialized_disambiguation_page_array(naive_map: &IncompleteAutocompleteMap, locale: &Locale) -> String {
     let mut builder = phf_codegen::Map::new();
     for (ambiguous_autocomplete, ambiguous_autocomplete_map) in &(naive_map.0) {
         if ambiguous_autocomplete_map.0.len() <= 1 {
-            dbg!("autocomplete entry \"{:?}\" does not need disambiguation; skipping", ambiguous_autocomplete);
+            dbg!("autocomplete entry does not need disambiguation:", ambiguous_autocomplete);
             continue;
         }
 
@@ -159,15 +157,16 @@ fn generate_serialized_disambiguation_page_array(naive_map: &IncompleteAutocompl
             base_autocomplete.clone(),
             &format!(
                 "DisambiguationPage {{
-                id: \"{base_autocomplete}\",
-                typed_ids: \"[{associated_page_ids}]\",
+                id: r#\"{base_autocomplete}\"#,
+                typed_ids: &[{associated_page_ids}],
                 default: {default}
             }}"
             ),
         );
     }
     format!(
-        "static DISAMBIGUATION_PAGES: phf::Map<&'static str, DisambiguationPage> = {};",
+        "static DISAMBIGUATION_PAGES_{}: phf::Map<&'static str, DisambiguationPage> = {};",
+        locale.to_string().to_ascii_uppercase(),
         builder.build()
     )
 }
@@ -215,4 +214,41 @@ fn add_disambiguation(
         .expect("typed_id not found")
         .1
         .insert(disambiguation_display.clone());
+}
+
+// todo: organize this function somewhere else?
+// todo: subfunctions
+fn generate_serialized_disambiguation_map(disambiguated_map: &IncompleteAutocompleteMap, locale: &Locale) -> String {
+    let mut builder = phf_codegen::Map::new();
+
+    disambiguated_map.0.values().into_iter().for_each(|inverse_map| {
+        inverse_map.0.clone().into_iter().for_each(|(typed_id, disambiguated_autocomplete)| {
+            let base = disambiguated_autocomplete.0.0;
+            let disambiguator = serialize_option(disambiguated_autocomplete.1);
+
+            builder.entry(
+                format!("{:?}", typed_id), 
+                &format!(
+                    "Autocomplete {{
+                        base: r#\"{base}\"#,
+                        disambiguator: {disambiguator},
+                    }}"
+                )
+            );
+        });
+    });
+
+    format!(
+        "static DISAMBIGUATION_MAP_{}: phf::Map<&'static str, Autocomplete> = {};",
+        locale.to_string().to_ascii_uppercase(),
+        builder.build()
+    )
+}
+
+fn serialize_option(option: Option<DisambiguationDisplay>) -> String {
+    if option.is_none() {
+        return String::from("None");
+    } else {
+        return format!("Some({:})", option.unwrap().0);
+    }
 }

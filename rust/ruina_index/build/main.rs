@@ -29,9 +29,9 @@ mod taggers;
 
 fn main() {
     let out_file_path = PathBuf::from(env::var("OUT_DIR").unwrap()).join(PathBuf::from("out.rs"));
-    if out_file_path.exists() {
+    if false && out_file_path.exists() {
         dbg!(
-            "[index] artifacts already exist at {}; not rebuilding",
+            "[index] not rebuilding because artifacts already exists",
             out_file_path.to_str().unwrap()
         );
         return;
@@ -55,6 +55,10 @@ fn main() {
         .merge(build_index_from(Vec::from(KEY_PAGES), &analyzer))
         .merge(build_index_from(Vec::from(PASSIVES), &analyzer));
 
+    let idk = index.clone();
+
+    dbg!("{:?}", idk);
+
     let inverse_index = InverseIndex::from_index(index);
 
     let autocomplete_objs = Locale::iter()
@@ -64,7 +68,7 @@ fn main() {
 
     let output = [
         inverse_index.to_serialized_phf_map("INVERSE_CARD_INDEX"),
-        autocomplete_objs,
+        autocomplete_objs
     ]
     .join("\n");
 
@@ -72,20 +76,24 @@ fn main() {
     dbg!("[reparser] wrote artifacts");
 }
 
-fn build_index_from(tagger: Vec<impl Tagger>, analyzer: &Analyzer) -> Index {
+fn build_index_from(taggers: Vec<impl Tagger>, analyzer: &Analyzer) -> Index {
     Index(
-        tagger
+        taggers
             .iter()
             .map(|x| {
+                let typed_id = x.get_typed_id();
+                let tags = 
+                x.generate_tags()
+                    .iter()
+                    .map(|tag| tag.0.clone())
+                    .flat_map(|txt| analyzer.analyze(&txt))
+                    .map(|token| token.0)
+                    .map(Tag)
+                    .collect();
+                dbg!("typed_id=", typed_id);
                 (
                     x.get_typed_id(),
-                    x.generate_tags()
-                        .iter()
-                        .map(|tag| tag.0.clone())
-                        .flat_map(|txt| analyzer.analyze(&txt))
-                        .map(|token| token.0)
-                        .map(Tag)
-                        .collect(),
+                    tags
                 )
             })
             .collect(),

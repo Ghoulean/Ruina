@@ -13,7 +13,9 @@ impl InverseIndex {
         let mut inverse_index: HashMap<Tag, Vec<TypedId>> = HashMap::new();
         index_map.iter()
             .for_each(|(key, tags)| {
+                dbg!("inverting index for key=", key);
                 tags.iter().for_each(|tag| {
+                    dbg!("adding tag=", tag);
                     let inverse_index_entry = inverse_index.entry(tag.clone()).or_insert(Vec::new());
                     if !inverse_index_entry.contains(key) {
                         inverse_index_entry.push(key.clone());
@@ -28,11 +30,11 @@ impl InverseIndex {
         for (key, vec) in &self.0 {
             builder.entry(
                 key.0.clone(),
-                format!("[{}]", vec.iter().map(|x| format!("{:?}", x) ).collect::<Vec<String>>().join(",")).as_str()
+                format!("&[{}]", vec.iter().map(|x| format!("{:?}", x) ).collect::<Vec<String>>().join(",")).as_str()
             );
         }
         format!(
-            "static {}: phf::Map<&'static str, phf::Map<&str, &[&str]>> = {};",
+            "static {}: phf::Map<&'static str, &[TypedId<'_>]> = {};",
             var_name,
             builder.build()
         )

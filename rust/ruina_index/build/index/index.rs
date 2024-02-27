@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use crate::taggers::tagger::Tag;
 use crate::taggers::tagger::TypedId;
 
+#[derive(Clone, Debug)]
 pub struct Index(pub HashMap<TypedId, Vec<Tag>>);
 
 impl Index {

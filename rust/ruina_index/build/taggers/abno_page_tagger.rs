@@ -10,7 +10,7 @@ const DEFAULT_ABNO_TAGS: [&str; 1] = ["abno"];
 
 impl Tagger for AbnoPage<'_> {
     fn get_typed_id(&self) -> TypedId {
-        TypedId(PageType::AbnoPageId, String::from(self.id))
+        TypedId(PageType::AbnoPageId, String::from(self.internal_name))
     }
 
     fn generate_tags(&self) -> Vec<Tag> {

@@ -10,7 +10,7 @@ const DEFAULT_BATTLE_SYMBOL_TAGS: [&str; 2] = ["battle", "symbol"];
 
 impl Tagger for BattleSymbol<'_> {
     fn get_typed_id(&self) -> TypedId {
-        TypedId(PageType::BattleSymbolId, String::from(self.id))
+        TypedId(PageType::BattleSymbolId, String::from(self.internal_name))
     }
 
     fn generate_tags(&self) -> Vec<Tag> {
