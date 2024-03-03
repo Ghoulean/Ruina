@@ -227,7 +227,7 @@ fn generate_serialized_disambiguation_map(disambiguated_map: &IncompleteAutocomp
             let disambiguator = serialize_option(disambiguated_autocomplete.1);
 
             builder.entry(
-                format!("{:?}", typed_id), 
+                format!("{:?}#{:?}", typed_id.0, typed_id.1), 
                 &format!(
                     "Autocomplete {{
                         base: r#\"{base}\"#,

@@ -9,8 +9,10 @@ pub struct DisambiguationPage<'a> {
     pub default: Option<&'a str>
 }
 
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct TypedId<'a>(pub PageType, pub &'a str);
 
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum PageType {
     AbnoPageId,
     BattleSymbolId,
