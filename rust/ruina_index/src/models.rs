@@ -1,6 +1,6 @@
 pub struct Autocomplete<'a> {
     pub base: &'a str,
-    pub disambiguator: Option<TypedId<'a>>
+    pub disambiguator: Option<&'a str>
 }
 
 pub struct DisambiguationPage<'a> {

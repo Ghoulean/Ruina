@@ -227,7 +227,7 @@ fn generate_serialized_disambiguation_map(disambiguated_map: &IncompleteAutocomp
             let disambiguator = serialize_option(disambiguated_autocomplete.1);
 
             builder.entry(
-                format!("{:?}#{:?}", typed_id.0, typed_id.1), 
+                format!("{:?}{:}", typed_id.0, typed_id.1), 
                 &format!(
                     "Autocomplete {{
                         base: r#\"{base}\"#,
@@ -249,6 +249,6 @@ fn serialize_option(option: Option<DisambiguationDisplay>) -> String {
     if option.is_none() {
         return String::from("None");
     } else {
-        return format!("Some({:})", option.unwrap().0);
+        return format!("Some(\"{:}\")", option.unwrap().0);
     }
 }

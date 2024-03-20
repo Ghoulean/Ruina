@@ -1,0 +1,17 @@
+[package]
+name = "binah_bot"
+version = "1.0.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+phf = { version = "0.11.2", default-features = false }
+lambda_http = "0.10.0"
+ruina_common = { path = "../ruina_common", version = "1.0.0" }
+ruina_index = { path = "../ruina_index", version = "1.0.0" }
+ruina_reparser = { path = "../ruina_reparser", version = "1.0.0" }
+serde = { version = "1.0", features = ["derive"] }
+serde_repr = "0.1"
+strum = { version = "0.26", features = ["derive"] }
+tokio = { version = "1", features = ["macros"] }

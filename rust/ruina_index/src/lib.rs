@@ -11,7 +11,6 @@ pub mod models;
 
 include!(concat!(env!("OUT_DIR"), "/out.rs"));
 
-
 // static INVERSE_CARD_INDEX: phf::Map<&'static str, &[TypedId<'_>]> = ::phf::Map
 // static DISAMBIGUATION_PAGES_KOREAN: phf::Map<&'static str, DisambiguationPage> = ::phf::Map
 // static DISAMBIGUATION_MAP_KOREAN: phf::Map<&'static str, Autocomplete> = ::phf::Map

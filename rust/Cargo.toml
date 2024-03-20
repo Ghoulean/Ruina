@@ -2,7 +2,9 @@
 resolver = "2"
 
 members = [
+    "binah_bot",
     "ruina_common",
     "ruina_index",
-    "ruina_reparser"
+    "ruina_index/ruina_index_analyzer",
+    "ruina_reparser",
 ]
