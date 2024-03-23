@@ -1,5 +1,3 @@
-extern crate ruina_common;
-
 use std::collections::HashMap;
 
 use phf::Map;

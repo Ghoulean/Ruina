@@ -4,7 +4,11 @@ use rust_stemmers::Stemmer;
 use crate::tokenizer::Token;
 
 fn punctuation_filter(token: &Token) -> Token {
-    Token(token.0.to_lowercase().replace(&['(', ')', ',', '\"', '.', ';', ':', '\'', '?', '!'][..], ""))
+    Token(token.0.to_lowercase()
+        .replace(&['(', ')', ',', '\"', '.', ';', ':', '\'', '?', '!', '’', '~', '…', '♣', '◆'][..], "")
+        .replace("<color=red>♥</color>", "")
+        .replace(&['-'][..], " ")
+    )
 }
 
 fn stemmer_filter(token: Token) -> Token {
