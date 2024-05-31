@@ -36,3 +36,5 @@ passive_rarity_header = Rarity
 passive_description_header = Description
 passive_transferable_header = Transferable
 passive_not_transferable_display = false
+
+card_not_found = Card not found!

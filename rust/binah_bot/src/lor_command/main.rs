@@ -1,6 +1,8 @@
 use std::str::FromStr;
 
+use fluent_templates::Loader;
 use lambda_http::tracing;
+use ruina_common::game_objects::common::Chapter;
 use ruina_common::localizations::common::Locale;
 use ruina_index::models::PageType;
 use ruina_index::models::ParsedTypedId;
@@ -14,9 +16,11 @@ use ruina_reparser::get_key_page_by_id;
 use ruina_reparser::get_key_page_locales_by_text_id;
 use ruina_reparser::get_passive_by_id;
 use ruina_reparser::get_passive_locales_by_id;
+use unic_langid::LanguageIdentifier;
 
 use crate::models::binahbot::BinahBotEnvironment;
 use crate::models::binahbot::BinahBotLocale;
+use crate::models::binahbot::DiscordEmbedColors;
 use crate::models::discord::DiscordEmbed;
 use crate::models::discord::DiscordInteraction;
 use crate::models::discord::DiscordInteractionOptions;
@@ -37,14 +41,16 @@ pub fn lor_command(interaction: &DiscordInteraction, env: &BinahBotEnvironment) 
 
     let typed_id = ParsedTypedId::from_str(get_query_option(command_args).as_str()).unwrap();
 
-    let binah_locale: BinahBotLocale = interaction
+    let binah_locale = interaction
         .locale
         .as_ref()
         .or(interaction.guild_locale.as_ref())
         .and_then(|x| BinahBotLocale::from_str(x).ok())
         .unwrap_or(BinahBotLocale::EnglishUS);
 
-    let locale: Locale = get_locale_option(command_args).and_then(|x| Locale::from_str(x.as_str()).ok()).unwrap_or(Locale::from(binah_locale.clone()));
+    let locale = get_locale_option(command_args).and_then(|x| Locale::from_str(x.as_str()).ok()).unwrap_or(Locale::from(binah_locale.clone()));
+
+    let spoiler_chapter = interaction.channel_id.as_ref().map(|x| env.spoiler_config.get(&x)).flatten();
 
     let embed: DiscordEmbed = match typed_id.0 {
         PageType::AbnoPageId => {
@@ -121,6 +127,24 @@ fn get_locale_option(vec: &[DiscordInteractionOptions]) -> Option<String> {
     vec.iter()
         .find(|x| x.name == "locale")
         .map(|x| x.value.clone())
+}
+
+
+fn build_not_found_embed(
+    request_locale: &BinahBotLocale,
+    env: &BinahBotEnvironment
+) -> DiscordEmbed {
+    let lang_id = LanguageIdentifier::from(request_locale);
+
+    DiscordEmbed {
+        title: Some(env.locales.lookup(&lang_id, "card_not_found")),
+        description: None,
+        color: Some(DiscordEmbedColors::Default as i32),
+        image: None,
+        footer: None,
+        author: None,
+        fields: None,
+    }
 }
 
 #[cfg(test)]
